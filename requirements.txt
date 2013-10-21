@@ -1,0 +1,1 @@
+-e hg+https://bitbucket.org/jck2/myhdl/@sf-hotfixes#egg=myhdl
