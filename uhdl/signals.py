@@ -3,7 +3,7 @@ import random
 import myhdl
 from myhdl import instance, always, delay, Signal, intbv, modbv
 
-from .helpers import create
+from .utils import create
 
 
 def bits(n=0, val=None, min=None, max=None):
