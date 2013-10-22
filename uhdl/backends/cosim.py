@@ -21,8 +21,7 @@ class cosim(object):
     def __call__(self, *args, **ports):
         cli_args = self.func(self.vpi, *args)
         cmd = ' '.join(flatten(self.cmd, cli_args))
-        print cmd
-        #return Cosimulation(exe=cmd,  **ports)
+        return Cosimulation(exe=cmd,  **ports)
 
 
 class compile(object):
@@ -53,7 +52,7 @@ class CoSimulatorBase(type):
             cls.compiler = {}
 
             if not hasattr(cls, 'vpi_file'):
-                cls.vpi_file = cls.vpi_path + '/{}.vpi'.format(cls.__name__)
+                cls.vpi_file = cls.vpi_path + '/{0}.vpi'.format(cls.__name__)
 
             for attr, obj in attrs.items():
                 if isinstance(obj, (cosim, compile)):
