@@ -10,6 +10,7 @@ useful outside.
 import contextlib
 import collections
 import os
+from functools import wraps
 
 
 def create(n, constructor, *args, **kwargs):
@@ -25,7 +26,6 @@ def cd(path):
         yield
     finally:
         os.chdir(curdir)
-
 
 
 class classproperty(object):
@@ -46,3 +46,17 @@ def flatten(*args):
         else:
             l.append(arg)
     return l
+
+
+def memoize(func):
+    cache = {}
+
+    @wraps(func)
+    def memoized(*args):
+        if args in cache:
+            result = cache[args]
+        else:
+            result = func(*args)
+            cache[args] = result
+        return result
+    return memoized

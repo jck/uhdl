@@ -1,1 +1,1 @@
-from .cosim import CoSimulator
+from .cosim import CoSimulator, icarus, modelsim
