@@ -4,7 +4,7 @@ import os
 from clint import resources
 from myhdl import Cosimulation
 
-from uhdl.utils import classproperty
+from uhdl.utils import classproperty, flatten
 
 
 class cosim(object):
@@ -20,8 +20,9 @@ class cosim(object):
 
     def __call__(self, *args, **ports):
         cli_args = self.func(self.vpi, *args)
-        cmd = self.cmd + ' ' + ' '.join(cli_args)
-        return Cosimulation(exe=cmd,  **ports)
+        cmd = ' '.join(flatten(self.cmd, cli_args))
+        print cmd
+        #return Cosimulation(exe=cmd,  **ports)
 
 
 class compile(object):
@@ -39,8 +40,7 @@ class compile(object):
 
     def run(self, *args, **kwargs):
         cli_args = self.func(*args, **kwargs)
-        cmd = [self.cmd]
-        cmd.extend(cli_args)
+        cmd = flatten(self.cmd, cli_args)
         subprocess.check_call(cmd)
 
 

@@ -8,6 +8,7 @@ useful outside.
 """
 
 import contextlib
+import collections
 import os
 
 
@@ -34,3 +35,14 @@ class classproperty(object):
 
     def __get__(self,  owner_self,  owner_cls):
         return self.fget(owner_cls)
+
+
+def flatten(*args):
+    l = []
+    for arg in args:
+        if isinstance(arg, collections.Iterable) and not isinstance(arg, str):
+            for item in arg:
+                l.extend(flatten(item))
+        else:
+            l.append(arg)
+    return l
