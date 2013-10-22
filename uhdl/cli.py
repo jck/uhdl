@@ -32,7 +32,7 @@ from .utils import cd
 
 def error(msg):
     sys.stdout.flush()
-    print ('{} {}'.format(colored.red('ERROR:'), msg))
+    print ('{0} {1}'.format(colored.red('ERROR:'), msg))
     sys.exit(1)
 
 
@@ -55,18 +55,18 @@ def vpi_init(sims, force=False, test=False):
     support_str = ', '.join(supported.keys())
     if sims:
         if not set(sims).issubset(supported):
-            error('Currently supported simulators: {}'.format(support_str))
+            error('Currently supported simulators: {0}'.format(support_str))
         sims = [supported[s] for s in sims]
         for s in sims:
             if not sim_exists(s):
-                error('Simulator {} not found'.format(s.__name__))
+                error('Simulator {0} not found'.format(s.__name__))
     else:
         sims = find_cosimulators()
         if not sims:
             print('No simulators found, exiting.')
             sys.exit()
         sims_str = ', '.join(s.__name__ for s in sims)
-        print('Found simulators: {}.'.format(sims_str))
+        print('Found simulators: {0}.'.format(sims_str))
 
     resources.init('uhdl', 'uhdl')
     cosim_dir = os.path.abspath(myhdl_dir() + '/../cosimulation')
@@ -74,7 +74,7 @@ def vpi_init(sims, force=False, test=False):
         for s in sims:
             name = s.__name__
             if s.vpi and not force:
-                print('VPI for {} already exists.'.format(name))
+                print('VPI for {0} already exists.'.format(name))
                 continue
             with cd(name):
                 make_vpi(name, dest=s.vpi_file)
