@@ -46,6 +46,10 @@ def main():
         vpi_init(sims, force=force, test=test)
 
 
+def myhdl_dir():
+    return imp.find_module('myhdl')[1]
+
+
 def vpi_init(sims, force=False, test=False):
     supported = CoSimulator.registry
     support_str = ', '.join(supported.keys())
@@ -65,8 +69,7 @@ def vpi_init(sims, force=False, test=False):
         print('Found simulators: {}.'.format(sims_str))
 
     resources.init('uhdl', 'uhdl')
-    myhdl_dir = imp.find_module('myhdl')[1]
-    cosim_dir = os.path.abspath(myhdl_dir + '/../cosimulation')
+    cosim_dir = os.path.abspath(myhdl_dir() + '/../cosimulation')
     with cd(cosim_dir):
         for s in sims:
             name = s.__name__
@@ -80,7 +83,7 @@ def vpi_init(sims, force=False, test=False):
 
 
 def sim_exists(sim):
-    cmd = sim.run.cmd
+    cmd = sim.cosim.cmd
     return subprocess.call('type '+cmd, shell=True, stdout=subprocess.PIPE,
                            stderr=subprocess.PIPE) == 0
 
