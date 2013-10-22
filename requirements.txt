@@ -1,1 +1,2 @@
 -e hg+https://bitbucket.org/jck2/myhdl/@sf-hotfixes#egg=myhdl
+clint==0.3.1

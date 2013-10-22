@@ -16,11 +16,13 @@ if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
 
+
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
+
     def run_tests(self):
         #import here, cause outside the eggs aren't loaded
         import pytest
@@ -29,6 +31,7 @@ class PyTest(TestCommand):
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+requires = ['myhdl >= 0.9dev']
 
 setup(
     name='uhdl',
@@ -42,9 +45,13 @@ setup(
         'uhdl',
     ],
     package_dir={'uhdl': 'uhdl'},
+    entry_points={
+        'console_scripts': [
+            'uhdl = uhdl.cli:main'
+        ]
+    },
     include_package_data=True,
-    install_requires=[
-    ],
+    install_requires=requires,
     license="BSD",
     zip_safe=False,
     keywords='uhdl',
@@ -57,5 +64,5 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     tests_require=['pytest'],
-    cmdclass = {'test': PyTest},
+    cmdclass={'test': PyTest},
 )
