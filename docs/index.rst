@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Utilities for MyHDL's documentation!
-======================================
+UHDL: Python Hardware Description for Humans.
+=============================================
 
 Contents:
 
@@ -14,6 +14,7 @@ Contents:
    readme
    installation
    usage
+   api
    contributing
    authors
    history

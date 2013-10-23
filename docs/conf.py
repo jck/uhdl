@@ -37,7 +37,9 @@ import uhdl
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
+              'sphinxcontrib.napoleon']
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -52,7 +54,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Utilities for MyHDL'
+project = u'UHDL'
 copyright = u'2013, Keerthan Jaic'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -79,7 +81,8 @@ release = uhdl.__version__
 exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
-#default_role = None
+default_role = None
+#default_role = 'py:obj'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 #add_function_parentheses = True
@@ -198,7 +201,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'uhdl.tex', u'Utilities for MyHDL Documentation',
+  ('index', 'uhdl.tex', u'UHDL Documentation',
    u'Keerthan Jaic', 'manual'),
 ]
 
@@ -228,7 +231,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'uhdl', u'Utilities for MyHDL Documentation',
+    ('index', 'uhdl', u'UHDL Documentation',
      [u'Keerthan Jaic'], 1)
 ]
 
@@ -242,7 +245,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'uhdl', u'Utilities for MyHDL Documentation',
+  ('index', 'uhdl', u'UHDL Documentation',
    u'Keerthan Jaic', 'uhdl', 'One line description of project.',
    'Miscellaneous'),
 ]
