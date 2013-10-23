@@ -18,10 +18,15 @@ def bits(n=0, val=None, min=None, max=None):
     """Simplify the frequent cases of creating bit oriented objects(intbv/bool)
 
     bits() == intbv()
+
     bits(0), bits(1) == False, True
+
     bits(n) == intbv()[n:]
+
     bits(n, v) == intbv(v)[n:]
+
     bits(min=i, max=j) == intbv(val=i, min=i, max=j)
+
     bits(val=x, min=i, max=j) == intbv(val=x, min=i, max=j)
 
     Args:
