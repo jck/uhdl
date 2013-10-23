@@ -1,3 +1,8 @@
+"""
+uhdl.backends.cosim
+~~~~~~~~~~~~~~~~~~~
+"""
+
 import subprocess
 import os
 
@@ -8,6 +13,7 @@ from uhdl.utils import classproperty, flatten
 
 
 class cosim(object):
+    """Decorator"""
     def __init__(self, func):
         self.func = func
         self.cmd = func.func_name
@@ -25,6 +31,7 @@ class cosim(object):
 
 
 class compile(object):
+    """Decorator"""
     def __init__(self, hdl):
         self.hdl = hdl
 
@@ -35,7 +42,7 @@ class compile(object):
 
     def _reg(self, cls):
         delattr(cls, self.cmd)
-        cls.compiler[self.hdl] = self.run
+        cls.compilers[self.hdl] = self.run
 
     def run(self, *args, **kwargs):
         cli_args = self.func(*args, **kwargs)
@@ -44,12 +51,13 @@ class compile(object):
 
 
 class CoSimulatorBase(type):
+    """Metaclass for CoSimulator Base class"""
     def __init__(cls, name, bases, attrs):
         if not hasattr(cls, 'registry'):
             cls.registry = {}
         else:
             cls.registry[name] = cls
-            cls.compiler = {}
+            cls.compilers = {}
 
             if not hasattr(cls, 'vpi_file'):
                 cls.vpi_file = cls.vpi_path + '/{0}.vpi'.format(cls.__name__)
@@ -60,6 +68,7 @@ class CoSimulatorBase(type):
 
 
 class CoSimulator(object):
+    """Base class for all CoSimulators"""
     __metaclass__ = CoSimulatorBase
     resources.init('uhdl', 'uhdl')
     vpi_path = resources.user.sub('vpi').path
@@ -73,7 +82,7 @@ class CoSimulator(object):
 
     @classmethod
     def compile(cls, hdl, *args, **kwargs):
-        return cls.compiler[hdl](*args, **kwargs)
+        return cls.compilers[hdl](*args, **kwargs)
 
 
 class icarus(CoSimulator):
@@ -92,11 +101,13 @@ class icarus(CoSimulator):
 class modelsim(CoSimulator):
 
     @compile('vhdl')
+    def vcom(ip, op):
+        raise NotImplementedError
+
+    @compile('verilog')
     def vlog(ip, op):
-        cli_args = '-work', op, ip
-        return cli_args
+        raise NotImplementedError
 
     @cosim
     def vsim(vpi, o):
-        #move from sfaoenids
-        pass
+        raise NotImplementedError

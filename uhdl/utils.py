@@ -2,20 +2,13 @@
 uhdl.utils
 ~~~~~~~~~~
 
-This module provides utility functions that are used within uhdl that are also
-useful outside.
-
+Utility functions(unrelated to hardware desription) used within uhdl.
 """
 
 import contextlib
 import collections
 import os
 from functools import wraps
-
-
-def create(n, constructor, *args, **kwargs):
-    """Returns a list of n instances of constructor(*args, **kwargs)"""
-    return [constructor(*args, **kwargs) for _ in range(n)]
 
 
 @contextlib.contextmanager
