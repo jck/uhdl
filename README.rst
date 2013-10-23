@@ -59,7 +59,7 @@ Documentation
 Documentation is avaliable at http://uhdl.readthedocs.org/api.html
 
 .. rubric:: Footnotes.
-.. [#sf] See sfaoenids_ for an example of uhdl models for automatically 
+.. [#sf] See sfaoenids_ for an example of using uhdl models for automatically 
     generating the HW-SW interface.
 
 .. _MyHDL: http://myhdl.org/
