@@ -1,2 +1,2 @@
 sphinx
-sphinxcontrip-napoleon
+sphinxcontrib-napoleon
