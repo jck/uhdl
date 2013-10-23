@@ -56,7 +56,7 @@ To install UHDL, simply:
 
 Documentation
 -------------
-Documentation is avaliable at http://uhdl.readthedocs.org/latest/api.html
+Documentation is avaliable at http://uhdl.readthedocs.org/en/latest/api.html
 
 .. rubric:: Footnotes.
 .. [#sf] See sfaoenids_ for an example of using uhdl models for automatically 
