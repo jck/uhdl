@@ -1,3 +1,4 @@
+import os
 import shutil
 
 from myhdl import toVerilog, toVHDL, traceSignals
@@ -149,7 +150,8 @@ class HW(object):
         dest_path = conf['path']
         if dest_path != '.':
             for f in files:
-                shutil.move(f, dest_path)
+                shutil.copy(f, dest_path)
+                os.remove(f)
 
         return gen, converter, files
 
