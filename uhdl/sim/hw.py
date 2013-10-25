@@ -183,8 +183,7 @@ class HW(object):
             if conf['backend'] is 'myhdl':
                 r = gen()
             else:
-                backend = CoSimulator.registry[kwargs['backend']]
-                backend.compile(conf['hdl'], files, 'test')
-                r = backend.cosim('test', **converter.portmap)
+                backend = CoSimulator.registry[conf['backend']]
+                r = backend.cosim_gen(conf['hdl'], files, converter.portmap)
 
         return r

@@ -58,7 +58,7 @@ def vpi_init(sims, force=False, test=False):
             error('Currently supported simulators: {0}'.format(support_str))
         sims = [supported[s] for s in sims]
         for s in sims:
-            if not sim_exists(s):
+            if not s.exists:
                 error('Simulator {0} not found'.format(s.__name__))
     else:
         sims = find_cosimulators()
@@ -69,36 +69,33 @@ def vpi_init(sims, force=False, test=False):
         print('Found simulators: {0}.'.format(sims_str))
 
     resources.init('uhdl', 'uhdl')
+    vpi_path = resources.user.sub('vpi')
     cosim_dir = os.path.abspath(myhdl_dir() + '/../cosimulation')
     with cd(cosim_dir):
         for s in sims:
             name = s.__name__
-            if s.vpi and not force:
+            if s.vpi_exists and not force:
                 print('VPI for {0} already exists.'.format(name))
                 continue
             with cd(name):
-                make_vpi(name, dest=s.vpi_file)
+                make_vpi(name, dest=vpi_path)
                 if test:
                     test_vpi(name)
 
 
-def sim_exists(sim):
-    cmd = sim.cosim.cmd
-    return subprocess.call('type '+cmd, shell=True, stdout=subprocess.PIPE,
-                           stderr=subprocess.PIPE) == 0
-
-
 def find_cosimulators():
-    return [s for s in CoSimulator.registry.values() if sim_exists(s)]
+    return [s for s in CoSimulator.registry.values() if s.exists]
 
 
 def make_vpi(name, dest):
+    print('\nCompiling {0} vpi:'.format(name))
     env = {}
     vpi_name = 'myhdl.vpi'
     if name == 'modelsim':
         vpi_name = 'myhdl_vpi.so'
         vsim = subprocess.check_output('which vsim', shell=True)
         env['INCS'] = '-I ' + os.path.abspath(vsim+'/../../include')
+        dest.write('cosim.do', 'run -all; quit')
 
     if env:
         os.environ.update(env)
@@ -106,14 +103,15 @@ def make_vpi(name, dest):
     else:
         subprocess.check_call(['make'])
 
-    shutil.copy(vpi_name, dest)
+    shutil.copy(vpi_name, dest.path)
 
 
 def test_vpi(name):
+    print('\nTesting {0} vpi:'.format(name))
     with cd('./test'):
         if name == 'modelsim':
             shutil.copy('../myhdl_vpi.so', '.')
             if not os.path.exists('./work'):
-                subprocess.call(['vlib', 'work'])
+                subprocess.check_call(['vlib', 'work'])
 
-        subprocess.call(['python', 'test_all.py'])
+        subprocess.check_call(['python', 'test_all.py'])
