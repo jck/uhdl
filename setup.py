@@ -31,7 +31,7 @@ class PyTest(TestCommand):
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-requires = ['myhdl >= 0.9dev']
+requires = ['myhdl==0.9', 'clint', 'docopt']
 
 setup(
     name='uhdl',
@@ -56,10 +56,11 @@ setup(
     zip_safe=False,
     keywords='uhdl',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
+        'Operating System :: POSIX :: Linux',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
     ],
