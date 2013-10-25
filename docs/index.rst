@@ -15,6 +15,7 @@ Contents:
    installation
    usage
    api
+   internals
    contributing
    authors
    history

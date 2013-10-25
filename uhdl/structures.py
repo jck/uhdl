@@ -28,6 +28,12 @@ class DictRef(object):
 
 
 class CaselessDict(collections.MutableMapping):
+    """A case-insensitive dictionary.
+
+    All keys are expected to be strings. The structure converts the key to
+    lower case before storing or retreiving objects.
+    """
+
     def __init__(self, data=None, **kwargs):
         self._store = dict()
         if data is None:

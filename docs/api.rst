@@ -17,6 +17,5 @@ Constructors
 
 Simulation
 ----------
-
 .. autoclass:: HW
     :members:
