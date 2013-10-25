@@ -69,7 +69,6 @@ def vpi_init(sims, force=False, test=False):
         print('Found simulators: {0}.'.format(sims_str))
 
     resources.init('uhdl', 'uhdl')
-    vpi_path = resources.user.sub('vpi')
     cosim_dir = os.path.abspath(myhdl_dir() + '/../cosimulation')
     with cd(cosim_dir):
         for s in sims:
@@ -78,7 +77,7 @@ def vpi_init(sims, force=False, test=False):
                 print('VPI for {0} already exists.'.format(name))
                 continue
             with cd(name):
-                make_vpi(name, dest=vpi_path)
+                make_vpi(name, dest=s.vpi)
                 if test:
                     test_vpi(name)
 
@@ -95,7 +94,8 @@ def make_vpi(name, dest):
         vpi_name = 'myhdl_vpi.so'
         vsim = subprocess.check_output('which vsim', shell=True)
         env['INCS'] = '-I ' + os.path.abspath(vsim+'/../../include')
-        dest.write('cosim.do', 'run -all; quit')
+        vpi_path = resources.user.sub('vpi')
+        vpi_path.write('cosim.do', 'run -all; quit')
 
     if env:
         os.environ.update(env)
@@ -103,7 +103,7 @@ def make_vpi(name, dest):
     else:
         subprocess.check_call(['make'])
 
-    shutil.copy(vpi_name, dest.path)
+    shutil.copy(vpi_name, dest)
 
 
 def test_vpi(name):
