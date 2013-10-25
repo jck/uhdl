@@ -1,7 +1,8 @@
 """
-uhdl.sim.signals
+uhdl.sim
 ~~~~~~~~~~~~~~~~
-This module provides signals which are useful for simulations
+This module provides objects which simplify simulations.
+
 """
 
 from myhdl import SignalType, ResetSignal, delay, always, instance

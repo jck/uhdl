@@ -85,7 +85,9 @@ class HW(object):
     Provides a uniform API for conversion and simulation of MyHDL Instances.
 
     Attributes:
-        config(CaselessDict): Dictionary containing the default config.
+        config(dict): Dictionary(:class:`~.CaselessDict`) containing
+            the default config.
+
             Modifying this attribute will change the default argument values
             of the :meth:`.convert` and :meth:`sim()` methods.
     """

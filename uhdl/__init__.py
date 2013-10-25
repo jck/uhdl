@@ -13,4 +13,5 @@ from . import math
 from . import backends
 
 from .constructors import bits, randbits, create, Sig, Sigs
-from .sim import Clock, Reset, HW
+from .sim import Clock, Reset
+from .hw import HW
