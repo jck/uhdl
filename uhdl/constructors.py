@@ -1,5 +1,5 @@
 """
-uhdl.wrappers
+uhdl.constructors
 ~~~~~~~~~~~~~
 
 This module provides the core uhdl constructors.
@@ -14,20 +14,10 @@ from myhdl import intbv, EnumType, EnumItemType, Signal
 _myhdltypes = (intbv, EnumType, EnumItemType)
 
 
-def bits(n=0, val=None, min=None, max=None):
-    """Simplify the frequent cases of creating bit oriented objects(intbv/bool)
+def bits(n=None, val=None, min=None, max=None):
+    """Constructs a :class:`myhdl.intbv` object.
 
-    bits() == intbv()
-
-    bits(0), bits(1) == False, True
-
-    bits(n) == intbv()[n:]
-
-    bits(n, v) == intbv(v)[n:]
-
-    bits(min=i, max=j) == intbv(val=i, min=i, max=j)
-
-    bits(val=x, min=i, max=j) == intbv(val=x, min=i, max=j)
+    Simplify the frequent cases of creating bit oriented objects(intbv/bool)
 
     Args:
         n (int): Bit width
@@ -37,10 +27,23 @@ def bits(n=0, val=None, min=None, max=None):
 
     Returns:
         intbv or bool
+
+    Examples:
+        bits() == intbv()
+
+        bits(0), bits(1) == False, True
+
+        bits(n) == intbv()[n:]
+
+        bits(n, v) == intbv(v)[n:]
+
+        bits(min=i, max=j) == intbv(val=i, min=i, max=j)
+
+        bits(val=x, min=i, max=j) == intbv(val=x, min=i, max=j)
     """
 
-    if not any([n, val, min, max]):
-        return intbv()
+    if not any([n, min, max]):
+        return intbv(val)
 
     if min or max:
         if n:
@@ -67,21 +70,27 @@ def bits(n=0, val=None, min=None, max=None):
 
 def randbits(n=0, min=None, max=None):
     """Create random bits easily, for simulations.
-    Passes args to `bits` and changes the value to random.
+
+    Passes arguments to :func:`.bits` and changes the value to random.
     """
     bv = bits(n=n, min=min, max=max)
+    if len(bv) == 0:
+        raise ValueError("Unspecified bit width")
     bv[:] = random.getrandbits(len(bv))
     return bv
 
 
 def Sig(*args, **kwargs):
-    """Create Signals with the same API as `bits`.
-    If the first argument is a bool or a myhdl type, a signal is created from
-    it. Else, arguments pass through to `bits` and a Signal is created from
-    the resulting object.
+    """Create Signals with the same API as :func:`.bits`.
+
+    If the first argument is a bool or a myhdl type, a :class:`myhdl.Signal`
+    is constructed of it.
+
+    Else, arguments pass through to :func:`bits` and a :class:`myhdl.Signal`
+    is constructed from the returned object.
     """
     if any((args, kwargs)):
-        if args and isinstance(args[0], (bool, )+_myhdltypes):
+        if args and isinstance(args[0], _myhdltypes + (bool,)):
             obj = args[0]
         else:
             obj = bits(*args, **kwargs)
@@ -92,7 +101,11 @@ def Sig(*args, **kwargs):
 
 
 def create(n, constructor, *args, **kwargs):
-    """Returns [constructor(*args, **kwargs) for i in range(n)]"""
+    """Helper function for constructing multiple objects with the same
+    arguments.
+
+    Shorthand for [constructor(\*args, \*\*kwargs) for i in range(n)]
+    """
     return [constructor(*args, **kwargs) for i in range(n)]
 
 
@@ -101,10 +114,10 @@ def Sigs(n, *args, **kwargs):
 
     Args:
         n: number of signals to create.
-        *args: passed through to `Sig`
-        **kwargs: passed through to `Sig`
+        *args: passed through to :func:`.Sig`
+        **kwargs: passed through to :func:`.Sig`
 
     Returns:
-        [Sig(*args, **kwargs) for i in range(n)]
+        [Sig(\*args, \*\*kwargs) for i in range(n)]
     """
     return create(n, Sig, *args, **kwargs)
