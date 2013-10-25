@@ -85,10 +85,9 @@ class HW(object):
     Provides a uniform API for conversion and simulation of MyHDL Instances.
 
     Attributes:
-        config(Caseless Dict): Dictionary containing the default config.
+        config(CaselessDict): Dictionary containing the default config.
             Modifying this attribute will change the default argument values
-            for the :meth:`.convert` and :meth:`sim()` methods.
-
+            of the :meth:`.convert` and :meth:`sim()` methods.
     """
     def __init__(self, top, *args, **kwargs):
         """
@@ -167,10 +166,12 @@ class HW(object):
             **kwargs: Optional arguments that :meth:`.convert` takes.
 
         Returns:
-            Seq of generators or Cosimulation object, depending on the backend.
+            Generator sequence if the backend is myhdl,
+
+            :class:`myhdl.Cosimulation` object if the backend is a simulator.
         """
         #sane defaults for sim
-        backend_name = kwargs.get('backend', None)
+        backend_name = kwargs.get('backend', 'myhdl')
         if backend_name and backend_name != 'myhdl':
             backend = CoSimulator.registry[kwargs['backend']]
             if 'hdl' not in kwargs:
@@ -182,7 +183,7 @@ class HW(object):
 
         gen, converter, files = self._convert(conf)
         with cd(conf['path']):
-            if conf['backend'] is 'myhdl':
+            if conf['backend'] == 'myhdl':
                 r = gen()
             else:
                 backend = CoSimulator.registry[conf['backend']]
