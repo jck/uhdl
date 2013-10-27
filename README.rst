@@ -31,12 +31,13 @@ simulation API, and more.
                 count.next = count + 1
         return logic
 
+    #Simulation(test_inc()).run()
     @run
     def test_inc(backend):
         clk = Clock()
         rst = Reset(async=False)
         en = Sig(False)
-        count = Sig(8)
+        count = Sig(8) #Signal(intbv()[8:])
         top = HW(inc, clk, rst, en, count)
         dut = top.sim(backend=backend)
 
@@ -53,6 +54,8 @@ simulation API, and more.
                 yield delay(1)
                 print rst, en, count
 
+        #If the function was not decorated with @run, 
+        #run([clk.gen(), rst.pulse(), dut, stim, mon]) would do the trick.
         return clk.gen(), rst.pulse(5), dut, stim, mon
 
     #run with myhdl
