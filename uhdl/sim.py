@@ -76,9 +76,9 @@ def run(*args, **params):
 
         @decorator
         def deco(func, *args, **kwargs):
-            run(func(*args, **kwargs), **params)
+            return run(func(*args, **kwargs), **params)
 
         return deco(args[0])
     else:
         #print args, params
-        Simulation(*args).run(**params)
+        return Simulation(*args).run(**params)
