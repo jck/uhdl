@@ -1,4 +1,4 @@
-https://bitbucket.org/jck2/myhdl/get/sf-hotfixes.tar.gz#egg=myhdl-0.9
+-e hg+https://bitbucket.org/jck2/myhdl/@sf-hotfixes#egg=myhdl-0.9
 clint==0.3.1
 docopt==0.6.1
 decorator==3.4.0
