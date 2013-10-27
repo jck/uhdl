@@ -8,27 +8,12 @@ from uhdl.utils import cd
 from uhdl.structures import CaselessDict
 
 
-_defaultconf = {
-    'name': None,
-    'path': '.',
-    'hdl': 'myhdl',
-    'backend': 'myhdl',
-    'timescale': '1ns/1ps',
-    'tb': True,
-    'trace': True,
-}
-
-
 def merge_config(current, new):
     if not new:
         return current
 
     merged = CaselessDict(current)
     merged.update(new)
-
-    #new_path = new.get('path', None)
-    #if new_path:
-        #merged['path'] = path(new_path)
 
     return merged
 
@@ -91,6 +76,17 @@ class HW(object):
             Modifying this attribute will change the default argument values
             of the :meth:`.convert` and :meth:`sim()` methods.
     """
+
+    config = {
+        'name': None,
+        'path': '.',
+        'hdl': 'myhdl',
+        'backend': 'myhdl',
+        'timescale': '1ns/1ps',
+        'tb': True,
+        'trace': True,
+    }
+
     def __init__(self, top, *args, **kwargs):
         """
         Args:
@@ -101,7 +97,7 @@ class HW(object):
         self.top = top
         self.args = args
         self.kwargs = kwargs
-        self.config = CaselessDict(_defaultconf)
+        self.config = CaselessDict(self.__class__.config)
         self.config['name'] = top.__name__
 
     def convert(self, **kwargs):
