@@ -21,21 +21,46 @@ simulation API, and more.
 
 .. code-block:: python
 
-    from uhdl import HW
+    from myhdl import always_seq, instance, StopSimulation
+    from uhdl import Clock, Reset, Sig, randbits, HW, run
 
-    dut = HW(top, clk, rst, a, b)
-    gens = [clk.gen(), rst.pulse(10), testbench()]
-    # Simulate design with icarus verilog
-    dut_gen = dut.sim(backend='icarus')
-    # Maybe you don't want to see the wave forms..
-    dut_gen = dut.sim(backend='icarus', trace=False)
-    # Or, Simulate it with modelsim
-    dut_gen = dut.sim(backend='modelsim', hdl='verilog')
-    # Or, Just simulate it in myhdl
-    dut_gen = dut.sim()
-    #Convert and save it to a path?
-    dut.convert(hdl='verilog', tb=False, path='path/to/somewhere')
+    def inc(clk, rst, en, count):
+        @always_seq(clk.posedge, rst)
+        def logic():
+            if en:
+                count.next = count + 1
+        return logic
 
+    @run
+    def test_inc(backend):
+        clk = Clock()
+        rst = Reset(async=False)
+        en = Sig(False)
+        count = Sig(8)
+        top = HW(inc, clk, rst, en, count)
+        dut = top.sim(backend=backend)
+
+        @instance
+        def stim():
+            for i in range(20):
+                en.next = randbits(1)
+            raise StopSimulation
+
+        @instance
+        def mon():
+            while True:
+                yield clk.posedge
+                yield delay(1)
+                print rst, en, count
+
+        return clk.gen(), rst.pulse(5), dut, stim, mon
+
+    #run with myhdl
+    test_inc()
+    #run with icarus
+    test_inc('icarus')
+    #run with modelsim
+    test_inc('modelsim')
 
 Features
 --------
