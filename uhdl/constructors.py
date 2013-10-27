@@ -74,6 +74,9 @@ def randbits(n=0, min=None, max=None):
     Passes arguments to :func:`.bits` and changes the value to random.
     """
     bv = bits(n=n, min=min, max=max)
+    if isinstance(bv, bool):
+        return random.choice([True, False])
+
     if len(bv) == 0:
         raise ValueError("Unspecified bit width")
     bv[:] = random.getrandbits(len(bv))
