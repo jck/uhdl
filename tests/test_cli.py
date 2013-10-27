@@ -6,9 +6,8 @@ from uhdl.backends import icarus
 from uhdl.utils import cd
 
 
-myhdl_dir = cli.myhdl_dir()
 print myhdl_dir
-cosim_dir = os.path.abspath(myhdl_dir + '/../cosimulation')
+cosim_dir = cli.cosim_srcdir()
 
 
 def md5sum(filename):
