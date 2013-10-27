@@ -1,3 +1,4 @@
 -e hg+https://bitbucket.org/jck2/myhdl/@sf-hotfixes#egg=myhdl
 clint==0.3.1
 docopt==0.6.1
+decorator==3.4.0

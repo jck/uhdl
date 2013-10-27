@@ -4,8 +4,9 @@ uhdl.sim
 This module provides objects which simplify simulations.
 
 """
+from myhdl import SignalType, ResetSignal, delay, always, instance, Simulation
 
-from myhdl import SignalType, ResetSignal, delay, always, instance
+from decorator import decorator
 
 
 class Clock(SignalType):
@@ -38,3 +39,42 @@ class Reset(ResetSignal):
             self.next = not self.active
 
         return _reset
+
+
+def run(*args, **params):
+    """Magical function for running :class:`myhdl.Simulation`s
+
+    Usable as a function or a decorator with optional parameters.
+
+    Usage:
+
+        As a function
+        -------------
+        run(generators, duration=None, quiet=False)
+
+        As a decorator
+        --------------
+        @run
+        def function_which_returns_generators(...):
+            ...
+
+        @run(duration=n, quiet=False)
+        def function_which_returns_generators(...):
+            ...
+    """
+    if not args:
+
+        def _run(*args):
+            return run(*args, **params)
+
+        return _run
+    elif len(args) == 1 and callable(args[0]):
+
+        @decorator
+        def deco(func, *args, **kwargs):
+            run(func(*args, **kwargs), **params)
+
+        return deco(args[0])
+    else:
+        #print args, params
+        Simulation(*args).run(**params)
