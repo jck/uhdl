@@ -5,7 +5,7 @@ import os
 import sys
 from setuptools.command.test import test as TestCommand
 
-import uhdl
+from uhdl import __version__
 
 try:
     from setuptools import setup
@@ -35,7 +35,7 @@ requires = ['myhdl', 'clint', 'docopt', 'decorator']
 
 setup(
     name='uhdl',
-    version=uhdl.__version__,
+    version=__version__,
     description='Python Hardware Description for Humans.',
     long_description=readme + '\n\n' + history,
     author='Keerthan Jaic',
