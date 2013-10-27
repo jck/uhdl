@@ -62,6 +62,7 @@ setup(
     url='https://github.com/jck/uhdl',
     packages=[
         'uhdl',
+        'uhdl.backends'
     ],
     package_dir={'uhdl': 'uhdl'},
     entry_points={
