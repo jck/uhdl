@@ -3,19 +3,23 @@
 
 import os
 import sys
+
+from setuptools import setup
 from setuptools.command.test import test as TestCommand
+from pip.req import parse_requirements
 
-import uhdl
-
-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
+
+
+def get_version():
+    for line in open('uhdl/__init__.py'):
+        if line.startswith('__version__'):
+            for quote in ('"', "'"):
+                if quote in line:
+                    return line.split(quote)[1]
 
 
 class PyTest(TestCommand):
@@ -30,13 +34,21 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
+
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-requires = ['myhdl', 'clint', 'docopt', 'decorator']
+
+reqs = []
+links = []
+for r in parse_requirements('requirements.txt'):
+    reqs.append(str(r.req))
+    if r.url:
+        links.append(str(r.url))
+
 
 setup(
     name='uhdl',
-    version=uhdl.__version__,
+    version=get_version(),
     description='Python Hardware Description for Humans.',
     long_description=readme + '\n\n' + history,
     author='Keerthan Jaic',
@@ -52,7 +64,8 @@ setup(
         ]
     },
     include_package_data=True,
-    install_requires=requires,
+    install_requires=reqs,
+    dependency_links=links,
     license="BSD",
     zip_safe=False,
     keywords='uhdl',
