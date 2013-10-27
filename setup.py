@@ -5,8 +5,8 @@ import os
 import sys
 from setuptools.command.test import test as TestCommand
 
-#from uhdl import __version__
-__version__ = '0.0.9'
+import uhdl
+
 
 try:
     from setuptools import setup
@@ -32,12 +32,11 @@ class PyTest(TestCommand):
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-#requires = ['myhdl', 'clint', 'docopt', 'decorator']
-requires = []
+requires = ['myhdl', 'clint', 'docopt', 'decorator']
 
 setup(
     name='uhdl',
-    version=__version__,
+    version=uhdl.__version__,
     description='Python Hardware Description for Humans.',
     long_description=readme + '\n\n' + history,
     author='Keerthan Jaic',
