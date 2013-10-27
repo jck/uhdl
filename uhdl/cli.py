@@ -16,7 +16,6 @@ Options:
 """
 
 from __future__ import print_function
-import imp
 import sys
 import subprocess
 import shutil
@@ -26,7 +25,7 @@ from clint import resources
 from clint.textui import colored
 from docopt import docopt
 
-from . import __version__
+from . import __version__, __myhdl__
 from .backends import CoSimulator
 from .utils import cd
 
@@ -51,10 +50,15 @@ def main():
             vpi_clean()
 
 
-def myhdl_dir():
-    return imp.find_module('myhdl')[1]
+def cosim_srcdir():
+    cache = resources.cache.path
+    cosim_dir = os.path.abspath(cache + '/myhdl/cosimulation')
 
-_cosimdir = os.path.abspath(myhdl_dir() + '/../cosimulation')
+    if not os.path.exists(cosim_dir):
+        subprocess.call(['pip', 'install', '-I', '-b', cache,
+                         '--no-install', __myhdl__])
+
+    return cosim_dir
 
 
 def vpi_init(sims, force=False, test=False):
@@ -75,7 +79,7 @@ def vpi_init(sims, force=False, test=False):
         sims_str = ', '.join(s.__name__ for s in sims)
         print('Found simulator(s): {0}.'.format(sims_str))
 
-    with cd(_cosimdir):
+    with cd(cosim_srcdir()):
         for s in sims:
             name = s.__name__
             if s.vpi_exists and not force:
@@ -124,8 +128,4 @@ def test_vpi(name):
 
 def vpi_clean():
     shutil.rmtree(resources.user.sub('vpi').path)
-    with cd(_cosimdir):
-        for s in find_cosimulators():
-            name = s.__name__
-            with cd(name):
-                subprocess.call(['make', 'clean'])
+    shutil.rmtree(resources.cache.sub('myhdl').path)
