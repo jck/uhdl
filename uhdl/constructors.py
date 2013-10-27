@@ -42,8 +42,8 @@ def bits(n=None, val=None, min=None, max=None):
         bits(val=x, min=i, max=j) == intbv(val=x, min=i, max=j)
     """
 
-    if not any([n, min, max]):
-        return intbv(val)
+    if all(v is None for v in (n, min, max)):
+        return intbv(val or 0)
 
     if min or max:
         if n:
@@ -52,7 +52,7 @@ def bits(n=None, val=None, min=None, max=None):
             raise ValueError("min without max")
         if not min:
             min = 0
-        if not val:
+        if val is None:
             val = min
         obj = intbv(val=val, min=min, max=max)
     elif type(n) == int:
