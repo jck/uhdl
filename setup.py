@@ -31,7 +31,7 @@ class PyTest(TestCommand):
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-requires = ['myhdl==0.9', 'clint', 'docopt']
+requires = ['myhdl', 'clint', 'docopt']
 
 setup(
     name='uhdl',
