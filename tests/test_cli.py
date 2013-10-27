@@ -6,7 +6,6 @@ from uhdl.backends import icarus
 from uhdl.utils import cd
 
 
-print myhdl_dir
 cosim_dir = cli.cosim_srcdir()
 
 
