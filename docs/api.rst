@@ -17,6 +17,6 @@ Constructors
 
 Simulation
 ----------
-.. autofunction:: run
+.. autofunction:: uhdl.run
 .. autoclass:: HW
     :members:
