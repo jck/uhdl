@@ -3,12 +3,13 @@ uhdl.
 
 Usage:
     uhdl vpi init [-f] [-t] [<simulator>...]
+    uhdl vpi clean
 
 Arguments:
     <simulator>     Supported simulators: {sims}. [default: all].
 
 Options:
-    -h --help       Show this screen.True
+    -h --help       Show this screen.
     --version       Show version.
     -f --force      Recompile VPIs even if they already exist.
     -t --test       Run MyHDL Cosimulation tests after compilation.
@@ -40,14 +41,20 @@ def main():
     doc = __doc__.format(sims=', '.join(CoSimulator.registry.keys()))
     args = docopt(doc, version=__version__)
     if args['vpi']:
-        sims = args['<simulator>']
-        force = args['--force']
-        test = args['--test']
-        vpi_init(sims, force=force, test=test)
+        resources.init('uhdl', 'uhdl')
+        if args['init']:
+            sims = args['<simulator>']
+            force = args['--force']
+            test = args['--test']
+            vpi_init(sims, force=force, test=test)
+        elif args['clean']:
+            vpi_clean()
 
 
 def myhdl_dir():
     return imp.find_module('myhdl')[1]
+
+_cosimdir = os.path.abspath(myhdl_dir() + '/../cosimulation')
 
 
 def vpi_init(sims, force=False, test=False):
@@ -66,11 +73,9 @@ def vpi_init(sims, force=False, test=False):
             print('No simulators found, exiting.')
             sys.exit()
         sims_str = ', '.join(s.__name__ for s in sims)
-        print('Found simulators: {0}.'.format(sims_str))
+        print('Found simulator(s): {0}.'.format(sims_str))
 
-    resources.init('uhdl', 'uhdl')
-    cosim_dir = os.path.abspath(myhdl_dir() + '/../cosimulation')
-    with cd(cosim_dir):
+    with cd(_cosimdir):
         for s in sims:
             name = s.__name__
             if s.vpi_exists and not force:
@@ -115,3 +120,12 @@ def test_vpi(name):
                 subprocess.check_call(['vlib', 'work'])
 
         subprocess.check_call(['python', 'test_all.py'])
+
+
+def vpi_clean():
+    shutil.rmtree(resources.user.sub('vpi').path)
+    with cd(_cosimdir):
+        for s in find_cosimulators():
+            name = s.__name__
+            with cd(name):
+                subprocess.call(['make', 'clean'])
