@@ -42,25 +42,29 @@ class Reset(ResetSignal):
 
 
 def run(*args, **params):
-    """Magical function for running :class:`myhdl.Simulation`s
+    """Magical function for running a :class:`myhdl.Simulation`
 
     Usable as a function or a decorator with optional parameters.
 
     Usage:
 
         As a function
-        -------------
-        run(generators, duration=None, quiet=False)
+
+        .. code-block:: python
+
+            run(generators, duration=None, quiet=False)
 
         As a decorator
-        --------------
-        @run
-        def function_which_returns_generators(...):
-            ...
 
-        @run(duration=n, quiet=False)
-        def function_which_returns_generators(...):
-            ...
+        .. code-block:: python
+
+            @run
+            def function_which_returns_generators(...):
+                ...
+
+            @run(duration=n, quiet=False)
+            def function_which_returns_generators(...):
+                ...
     """
     if not args:
 

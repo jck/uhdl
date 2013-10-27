@@ -17,5 +17,6 @@ Constructors
 
 Simulation
 ----------
+.. autofunction:: run
 .. autoclass:: HW
     :members:
