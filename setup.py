@@ -5,7 +5,8 @@ import os
 import sys
 from setuptools.command.test import test as TestCommand
 
-from uhdl import __version__
+#from uhdl import __version__
+__version__ = '0.0.9'
 
 try:
     from setuptools import setup
