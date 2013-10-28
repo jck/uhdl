@@ -24,6 +24,8 @@ To compile the cosimulation vpis, simply:
 
     $ uhdl vpi init
 
+Usage Example:
+
 
 .. code-block:: python
 
