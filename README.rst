@@ -63,7 +63,7 @@ Usage Example:
                 print rst, en, count
 
         #If the function was not decorated with @run, 
-        #run([clk.gen(), rst.pulse(), dut, stim, mon]) would do the trick.
+        #run(clk.gen(), rst.pulse(), dut, stim, mon) would do the trick.
         return clk.gen(), rst.pulse(5), dut, stim, mon
 
     #run with myhdl
