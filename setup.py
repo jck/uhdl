@@ -77,6 +77,7 @@ setup(
     zip_safe=False,
     keywords='uhdl',
     classifiers=[
+        'Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)'
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
