@@ -18,6 +18,12 @@ digital hardware with MyHDL_.
 UHDL provides utilities to simplify constructing myhdl objects, A uniform
 simulation API, and more.
 
+To compile the cosimulation vpis, simply:
+
+.. code-block:: bash
+
+    $ uhdl vpi init
+
 
 .. code-block:: python
 

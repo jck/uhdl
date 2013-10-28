@@ -8,13 +8,13 @@ Release History
 - models
 
 
-0.0.9 (2013-10-32)
+0.0.9 (2013-10-27)
 ++++++++++++++++++
 
 * First release on PyPI that actually works.
 
 
-0.0.8 (2013-10-31)
+0.0.8 (2013-10-27)
 ++++++++++++++++++
 
 * First release on PyPI.
