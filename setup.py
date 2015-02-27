@@ -3,6 +3,7 @@
 
 import os
 import sys
+import uuid
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
@@ -39,14 +40,9 @@ readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 
-#tmp fix for pip versions below 1.4
-class options(object):
-    def __getattr__(self, attr):
-        return None
-
 reqs = []
 links = []
-for r in parse_requirements('requirements.txt', options=options()):
+for r in parse_requirements('requirements.txt', session=uuid.uuid1()):
     reqs.append(str(r.req))
     if r.url:
         links.append(str(r.url))
