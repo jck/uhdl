@@ -25,7 +25,7 @@ from clint import resources
 from clint.textui import colored
 from docopt import docopt
 
-from . import __version__, __myhdl__
+from . import __version__
 from .backends import CoSimulator
 from .utils import cd
 
@@ -52,11 +52,11 @@ def main():
 
 def cosim_srcdir():
     cache = resources.cache.path
-    cosim_dir = os.path.abspath(cache + '/myhdl/cosimulation')
+    cosim_dir = os.path.abspath(cache + '/cosimulation')
 
     if not os.path.exists(cosim_dir):
-        subprocess.call(['pip', 'install', '-I', '-b', cache,
-                         '--no-install', __myhdl__])
+        shutil.copytree(os.path.join(sys.prefix, 'share/myhdl/cosimulation'),
+                        cosim_dir)
 
     return cosim_dir
 
