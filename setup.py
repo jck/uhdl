@@ -49,7 +49,6 @@ setup(
     },
     include_package_data=True,
     install_requires=reqs,
-    dependency_links=links,
     license="BSD",
     zip_safe=False,
     keywords='uhdl',
