@@ -1,4 +1,4 @@
-# Config file for automatic testing at travis-ci.org
+sudo: false
 
 language: python
 
@@ -7,9 +7,9 @@ python:
   - "2.6"
   - "pypy"
 
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq iverilog
+addons:
+  apt_packages:
+    - iverilog
 
 install:
   - pip install -r requirements.txt
@@ -17,6 +17,4 @@ install:
 script: py.test
 
 notifications:
-  email:
-    on_success: change
-    on_failure: change
+  email: false
