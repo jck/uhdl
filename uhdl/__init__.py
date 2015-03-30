@@ -9,5 +9,5 @@ __version__ = '0.0.9'
 
 from . import math
 from .constructors import bits, randbits, create, Sig, Sigs
-from .sim import Clock, Reset, run
+from .helpers import Clock, Reset, run_sim, sim
 from .hw import HW

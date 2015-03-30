@@ -1,12 +1,7 @@
-"""
-uhdl.sim
-~~~~~~~~~~~~~~~~
-This module provides objects which simplify simulations.
+import functools
 
-"""
+import wrapt
 from myhdl import SignalType, ResetSignal, delay, always, instance, Simulation
-
-from decorator import decorator
 
 
 class Clock(SignalType):
@@ -40,45 +35,30 @@ class Reset(ResetSignal):
 
         return _reset
 
+def run_sim(*args, **kwargs):
+    return Simulation(*args).run(**kwargs)
 
-def run(*args, **params):
-    """Magical function for running a :class:`myhdl.Simulation`
 
-    Usable as a function or a decorator with optional parameters.
+def sim(wrapped=None, duration=None, quiet=False):
+    """Decorator which simplifies running a :class:`myhdl.Simulation`
 
     Usage:
 
-        As a function
-
         .. code-block:: python
 
-            run(generators, duration=None, quiet=False)
-
-        As a decorator
-
-        .. code-block:: python
-
-            @run
+            @sim
             def function_which_returns_generators(...):
                 ...
 
-            @run(duration=n, quiet=False)
+            @sim(duration=n, quiet=False)
             def function_which_returns_generators(...):
                 ...
     """
-    if not args:
+    if wrapped is None:
+        return functools.partial(sim, duration=duration, quiet=quiet)
 
-        def _run(*args):
-            return run(*args, **params)
+    @wrapt.decorator
+    def wrapper(wrapped, instance, args, kwargs):
+        return run_sim(wrapped(*args, **kwargs), duration=duration, quiet=quiet)
 
-        return _run
-    elif len(args) == 1 and callable(args[0]):
-
-        @decorator
-        def deco(func, *args, **kwargs):
-            return run(func(*args, **kwargs), **params)
-
-        return deco(args[0])
-    else:
-        #print args, params
-        return Simulation(*args).run(**params)
+    return wrapper(wrapped)
