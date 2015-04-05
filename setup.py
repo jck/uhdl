@@ -44,7 +44,7 @@ setup(
     package_dir={'uhdl': 'uhdl'},
     entry_points={
         'console_scripts': [
-            'uhdl = uhdl.cli:main'
+            'uhdl = uhdl.cli:cli'
         ]
     },
     include_package_data=True,

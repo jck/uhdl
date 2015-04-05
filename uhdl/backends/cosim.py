@@ -9,7 +9,7 @@ import os
 from clint import resources
 from myhdl import Cosimulation
 
-from uhdl.utils import classproperty, flatten
+from uhdl.utils import classproperty, flatten, which
 
 
 resources.init('uhdl', 'uhdl')
@@ -87,9 +87,7 @@ class CoSimulator(object):
     @classproperty
     def exists(cls):
         """Check if the cosimulator's executable exists in the PATH"""
-        cmd = cls.cosim.cmd
-        retcode = subprocess.call(['type', cmd], shell=True)
-        return retcode == 0
+        return which(cls.cosim.cmd) is not None
 
     @classproperty
     def vpi_exists(cls):

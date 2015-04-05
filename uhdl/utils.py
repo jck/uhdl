@@ -8,6 +8,7 @@ Utility functions(unrelated to hardware desription) used within uhdl.
 import contextlib
 import collections
 import os
+import distutils.spawn
 from functools import wraps
 
 
@@ -31,6 +32,10 @@ def cd(path):
         yield
     finally:
         os.chdir(curdir)
+
+
+def which(exe):
+    return distutils.spawn.find_executable(exe)
 
 
 class classproperty(object):

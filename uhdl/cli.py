@@ -1,53 +1,24 @@
-"""
-uhdl.
-
-Usage:
-    uhdl vpi init [-f] [-t] [<simulator>...]
-    uhdl vpi clean
-
-Arguments:
-    <simulator>     Supported simulators: {sims}. [default: all].
-
-Options:
-    -h --help       Show this screen.
-    --version       Show version.
-    -f --force      Recompile VPIs even if they already exist.
-    -t --test       Run MyHDL Cosimulation tests after compilation.
-"""
-
-from __future__ import print_function
 import sys
 import subprocess
 import shutil
 import os
 
 from clint import resources
-from clint.textui import colored
-from docopt import docopt
+import click
 
-from . import __version__
 from .backends import CoSimulator
 from .utils import cd
 
 
-def error(msg):
-    sys.stdout.flush()
-    print ('{0} {1}'.format(colored.red('ERROR:'), msg))
-    sys.exit(1)
+@click.group()
+def cli():
+    pass
 
 
-def main():
-    doc = __doc__.format(sims=', '.join(CoSimulator.registry.keys()))
-    args = docopt(doc, version=__version__)
-    if args['vpi']:
-        resources.init('uhdl', 'uhdl')
-        if args['init']:
-            sims = args['<simulator>']
-            force = args['--force']
-            test = args['--test']
-            vpi_init(sims, force=force, test=test)
-        elif args['clean']:
-            vpi_clean()
+@cli.group()
+def vpi():
+    """Manage cosimulation VPI modules"""
+    pass
 
 
 def cosim_srcdir():
@@ -60,63 +31,60 @@ def cosim_srcdir():
 
     return cosim_dir
 
+supported_sims = CoSimulator.registry.keys()
+installed_sims = [s.__name__ for s in CoSimulator.registry.values() if s.exists]
 
-def vpi_init(sims, force=False, test=False):
-    supported = CoSimulator.registry
-    support_str = ', '.join(supported.keys())
-    if sims:
-        if not set(sims).issubset(supported):
-            error('Currently supported simulators: {0}'.format(support_str))
-        sims = [supported[s] for s in sims]
-        for s in sims:
-            if not s.exists:
-                error('Simulator {0} not found'.format(s.__name__))
-    else:
-        sims = find_cosimulators()
-        if not sims:
-            print('No simulators found, exiting.')
-            sys.exit()
-        sims_str = ', '.join(s.__name__ for s in sims)
-        print('Found simulator(s): {0}.'.format(sims_str))
+class SimParamType(click.ParamType):
+    name = 'simulator'
+
+    def convert(self, value, param, ctx):
+        if value not in CoSimulator.registry.keys():
+            self.fail('%s is not a supported simulator' % value, param, ctx)
+        if value not in installed_sims:
+            self.fail('%s is not installed' % value, param, ctx)
+        return value
+
+SIM = SimParamType()
+
+
+@vpi.command('init')
+@click.option('--force', is_flag=True,
+              help='Recompile VPIs even if they already exist')
+@click.argument('simulators', nargs=-1, type=SIM)
+def vpi_init(simulators, force):
+    """Compile Cosimulation VPI modules"""
+    if not simulators:
+        simulators = installed_sims
+
+    if not simulators:
+        click.secho('No simulators found, exiting.', fg='red')
+        sys.exit()
+
+    sims = [CoSimulator.registry[k] for k in simulators]
 
     with cd(cosim_srcdir()):
         for s in sims:
             name = s.__name__
             if s.vpi_exists and not force:
-                print('VPI for {0} already exists.'.format(name))
+                click.echo('VPI for {0} already exists.'.format(name))
                 continue
             with cd(name):
                 make_vpi(name, dest=s.vpi)
-                if test:
-                    test_vpi(name)
-
-
-def find_cosimulators():
-    return [s for s in CoSimulator.registry.values() if s.exists]
 
 
 def make_vpi(name, dest):
-    print('\nCompiling {0} vpi:'.format(name))
-    env = {}
-    vpi_name = 'myhdl.vpi'
+    click.echo('\nCompiling {0} vpi:'.format(name))
+    vpi_name = {
+        'icarus': 'myhdl.vpi',
+        'modelsim': 'myhdl_vpi.so'
+    }
     if name == 'modelsim':
-        vpi_name = 'myhdl_vpi.so'
-        vsim = subprocess.check_output('which vsim', shell=True)
-        env['INCS'] = '-I ' + os.path.abspath(vsim+'/../../include')
         vpi_path = resources.user.sub('vpi')
         vpi_path.write('cosim.do', 'run -all; quit')
 
-    if env:
-        os.environ.update(env)
-        subprocess.check_call(['make', '-e'])
-    else:
-        subprocess.check_call(['make'])
+    subprocess.check_call(['make'])
 
-    shutil.copy(vpi_name, dest)
-
-
-def test_vpi(name):
-    print('\nTesting {0} vpi:'.format(name))
+    click.echo('\nTesting {0} vpi:'.format(name))
     with cd('./test'):
         if name == 'modelsim':
             shutil.copy('../myhdl_vpi.so', '.')
@@ -125,7 +93,10 @@ def test_vpi(name):
 
         subprocess.check_call(['python', 'test_all.py'])
 
+    shutil.copy(vpi_name[name], dest)
 
+
+@vpi.command('clean')
 def vpi_clean():
     shutil.rmtree(resources.user.sub('vpi').path)
     shutil.rmtree(resources.cache.sub('myhdl').path)
