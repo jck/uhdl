@@ -6,27 +6,17 @@ import re
 import uuid
 
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
-from pip.req import parse_requirements
 
 
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
 with open('uhdl/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
-    f.read().decode('utf-8')).group(1)))
+        f.read().decode('utf-8')).group(1)))
 
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-
-
-reqs = []
-links = []
-for r in parse_requirements('requirements.txt', session=uuid.uuid1()):
-    reqs.append(str(r.req))
-    if r.url:
-        links.append(str(r.url))
 
 
 setup(
@@ -48,7 +38,12 @@ setup(
         ]
     },
     include_package_data=True,
-    install_requires=reqs,
+    install_requires=[
+        'myhdl>=0.9.dev0',
+        'click',
+        'wrapt',
+        'clint'
+    ],
     license="BSD",
     zip_safe=False,
     keywords='uhdl',
