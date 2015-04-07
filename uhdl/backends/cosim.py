@@ -8,6 +8,7 @@ import os
 
 from myhdl import Cosimulation
 
+from uhdl._compat import with_metaclass
 from uhdl.utils import classproperty, flatten, which, vpi_dir
 
 
@@ -78,9 +79,8 @@ class CoSimulatorBase(type):
                     obj._reg(cls)
 
 
-class CoSimulator(object):
+class CoSimulator(with_metaclass(CoSimulatorBase)):
     """Base class for all CoSimulators"""
-    __metaclass__ = CoSimulatorBase
 
     @classproperty
     def exists(cls):
