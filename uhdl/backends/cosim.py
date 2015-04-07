@@ -23,7 +23,7 @@ class cosim(object):
     """
     def __init__(self, func):
         self.func = func
-        self.cmd = func.func_name
+        self.cmd = func.__name__
 
     def _reg(self, cls):
         self.cls = cls
@@ -46,7 +46,7 @@ class compile(object):
 
     def __call__(self, func):
         self.func = func
-        self.cmd = func.func_name
+        self.cmd = func.__name__
         return self
 
     def _reg(self, cls):
