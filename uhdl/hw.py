@@ -175,7 +175,7 @@ class HW(object):
             if 'hdl' not in kwargs:
                 if len(backend.compilers) > 1:
                     raise ValueError('Must specify hdl for backend', backend)
-                kwargs['hdl'] = backend.compilers.keys()[0]
+                kwargs['hdl'] = list(backend.compilers)[0]
 
         conf = merge_config(self.config, kwargs)
 
