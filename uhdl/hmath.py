@@ -1,10 +1,3 @@
-"""
-myhdl_utils.math
-~~~~~~~~~~~~~~~~
-
-This module provides math functions that are helpful for hardware design.
-"""
-
 from __future__ import absolute_import
 import math as _m
 
