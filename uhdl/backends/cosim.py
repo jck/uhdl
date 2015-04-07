@@ -9,10 +9,7 @@ import os
 from myhdl import Cosimulation
 
 from uhdl._compat import with_metaclass
-from uhdl.utils import classproperty, flatten, which, vpi_dir
-
-
-vpi_path = vpi_dir()
+from uhdl.utils import classproperty, flatten, which, VPI
 
 
 class cosim(object):
@@ -71,7 +68,7 @@ class CoSimulatorBase(type):
 
             #set default vpi file path to resources dir
             if not hasattr(cls, 'vpi'):
-                cls.vpi = vpi_path + '/{0}.vpi'.format(cls.__name__)
+                cls.vpi = VPI.dir + '/{0}.vpi'.format(cls.__name__)
 
             for attr, obj in attrs.items():
                 if isinstance(obj, (cosim, compile)):
@@ -131,6 +128,6 @@ class modelsim(CoSimulator):
     @cosim
     def vsim(vpi, op):
         top = 'work_{0}.tb_{0}'.format(op)
-        do = '-do', vpi_path + '/cosim.do'
+        do = '-do', VPI.dir + '/cosim.do'
         cli_args = '-c', '-quiet', '-pli', vpi, top, do
         return cli_args

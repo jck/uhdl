@@ -5,21 +5,36 @@ uhdl.utils
 Utility functions(unrelated to hardware desription) used within uhdl.
 """
 
-import contextlib
 import collections
-import os
-import sys
+import contextlib
 import distutils.spawn
+import os
+import shutil
+import sys
 from functools import wraps
 
 
-def vpi_dir():
-    plat = sys.platform
-    if plat.startswith('linux'):
-        data_dir = os.getenv('XDG_DATA_HOME', '~/.local/share')
-    elif plat == 'darwin':
-        data_dir = '~/Library/Application Support/'
-    return os.path.join(os.path.expanduser(data_dir), 'uhdl', 'vpi')
+class _VPI():
+    def __init__(self):
+        plat = sys.platform
+        if plat.startswith('linux'):
+            data_dir = os.getenv('XDG_DATA_HOME', '~/.local/share')
+        elif plat == 'darwin':
+            data_dir = '~/Library/Application Support/'
+
+        self._dir = os.path.join(os.path.expanduser(data_dir), 'uhdl', 'vpi')
+        if not os.path.exists(self._dir):
+            os.makedirs(self._dir)
+
+    @property
+    def dir(self):
+        return self._dir
+
+    def clean(self):
+        if os.path.exists(self._dir):
+            shutil.rmtree(self._dir)
+
+VPI = _VPI()
 
 
 @contextlib.contextmanager

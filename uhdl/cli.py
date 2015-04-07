@@ -8,9 +8,8 @@ from tempfile import mkdtemp
 import click
 
 from .backends import CoSimulator
-from .utils import cd, vpi_dir
+from .utils import cd, VPI
 
-vpi_path = vpi_dir()
 
 @click.group()
 def cli():
@@ -74,9 +73,6 @@ def vpi_init(simulators, force):
 
 
 def make_vpi(name, dest):
-    if not os.path.exists(vpi_path):
-        os.makedirs(vpi_path)
-
     click.echo('\nCompiling {0} vpi:'.format(name))
     vpi_name = {
         'icarus': 'myhdl.vpi',
@@ -99,5 +95,4 @@ def make_vpi(name, dest):
 
 @vpi.command('clean')
 def vpi_clean():
-    if os.path.exists(vpi_path):
-        shutil.rmtree(vpi_path)
+    VPI.clean()
