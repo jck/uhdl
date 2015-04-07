@@ -16,14 +16,13 @@ with open('uhdl/__init__.py', 'rb') as f:
 
 
 readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 
 setup(
     name='uhdl',
     version=version,
     description='Python Hardware Description for Humans.',
-    long_description=readme + '\n\n' + history,
+    long_description=readme,
     author='Keerthan Jaic',
     author_email='jckeerthan@gmail.com',
     url='https://github.com/jck/uhdl',
