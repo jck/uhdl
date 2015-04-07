@@ -42,7 +42,6 @@ setup(
         'myhdl>=0.9.dev0',
         'click',
         'wrapt',
-        'clint'
     ],
     license="BSD",
     zip_safe=False,

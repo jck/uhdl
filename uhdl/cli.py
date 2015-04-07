@@ -3,12 +3,14 @@ import subprocess
 import shutil
 import os
 
-from clint import resources
+from tempfile import mkdtemp
+
 import click
 
 from .backends import CoSimulator
-from .utils import cd
+from .utils import cd, vpi_dir
 
+vpi_path = vpi_dir()
 
 @click.group()
 def cli():
@@ -22,12 +24,11 @@ def vpi():
 
 
 def cosim_srcdir():
-    cache = resources.cache.path
+    cache = mkdtemp()
     cosim_dir = os.path.abspath(cache + '/cosimulation')
 
-    if not os.path.exists(cosim_dir):
-        shutil.copytree(os.path.join(sys.prefix, 'share/myhdl/cosimulation'),
-                        cosim_dir)
+    shutil.copytree(os.path.join(sys.prefix, 'share/myhdl/cosimulation'),
+                    cosim_dir)
 
     return cosim_dir
 
@@ -73,14 +74,14 @@ def vpi_init(simulators, force):
 
 
 def make_vpi(name, dest):
+    if not os.path.exists(vpi_path):
+        os.makedirs(vpi_path)
+
     click.echo('\nCompiling {0} vpi:'.format(name))
     vpi_name = {
         'icarus': 'myhdl.vpi',
         'modelsim': 'myhdl_vpi.so'
     }
-    if name == 'modelsim':
-        vpi_path = resources.user.sub('vpi')
-        vpi_path.write('cosim.do', 'run -all; quit')
 
     subprocess.check_call(['make'])
 
@@ -98,5 +99,5 @@ def make_vpi(name, dest):
 
 @vpi.command('clean')
 def vpi_clean():
-    shutil.rmtree(resources.user.sub('vpi').path)
-    shutil.rmtree(resources.cache.sub('myhdl').path)
+    if os.path.exists(vpi_path):
+        shutil.rmtree(vpi_path)

@@ -8,8 +8,18 @@ Utility functions(unrelated to hardware desription) used within uhdl.
 import contextlib
 import collections
 import os
+import sys
 import distutils.spawn
 from functools import wraps
+
+
+def vpi_dir():
+    plat = sys.platform
+    if plat.startswith('linux'):
+        data_dir = os.getenv('XDG_DATA_HOME', '~/.local/share')
+    elif plat == 'darwin':
+        data_dir = '~/Library/Application Support/'
+    return os.path.join(os.path.expanduser(data_dir), 'uhdl', 'vpi')
 
 
 @contextlib.contextmanager

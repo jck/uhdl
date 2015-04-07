@@ -1,4 +1,3 @@
 git+https://github.com/jandecaluwe/myhdl.git
-clint==0.3.1
 click
 wrapt

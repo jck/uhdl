@@ -6,14 +6,12 @@ uhdl.backends.cosim
 import subprocess
 import os
 
-from clint import resources
 from myhdl import Cosimulation
 
-from uhdl.utils import classproperty, flatten, which
+from uhdl.utils import classproperty, flatten, which, vpi_dir
 
 
-resources.init('uhdl', 'uhdl')
-vpi_path = resources.user.sub('vpi').path
+vpi_path = vpi_dir()
 
 
 class cosim(object):
