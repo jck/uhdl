@@ -5,7 +5,7 @@ UHDL
 
 from __future__ import absolute_import
 
-__version__ = '0.0.9'
+__version__ = '0.1.dev0'
 
 from . import hmath
 from .constructors import bits, randbits, create, Sig, Sigs
