@@ -21,7 +21,7 @@ a, b = Sigs(2, 32)
 dut = HW(connect, a, b)
 
 
-def test_icarus_backend_simple():
+def test_icarus_backend_simple(in_tmpdir):
 
     @instance
     def stim():
