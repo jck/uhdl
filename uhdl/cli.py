@@ -22,15 +22,6 @@ def vpi():
     pass
 
 
-def cosim_srcdir():
-    cache = mkdtemp()
-    cosim_dir = os.path.abspath(cache + '/cosimulation')
-
-    shutil.copytree(os.path.join(sys.prefix, 'share/myhdl/cosimulation'),
-                    cosim_dir)
-
-    return cosim_dir
-
 supported_sims = CoSimulator.registry.keys()
 installed_sims = [s.__name__ for s in CoSimulator.registry.values() if s.exists]
 
@@ -62,35 +53,12 @@ def vpi_init(simulators, force):
 
     sims = [CoSimulator.registry[k] for k in simulators]
 
-    with cd(cosim_srcdir()):
-        for s in sims:
-            name = s.__name__
-            if s.vpi_exists and not force:
-                click.echo('VPI for {0} already exists.'.format(name))
-                continue
-            with cd(name):
-                make_vpi(name, dest=s.vpi)
-
-
-def make_vpi(name, dest):
-    click.echo('\nCompiling {0} vpi:'.format(name))
-    vpi_name = {
-        'icarus': 'myhdl.vpi',
-        'modelsim': 'myhdl_vpi.so'
-    }
-
-    subprocess.check_call(['make'])
-
-    click.echo('\nTesting {0} vpi:'.format(name))
-    with cd('./test'):
-        if name == 'modelsim':
-            shutil.copy('../myhdl_vpi.so', '.')
-            if not os.path.exists('./work'):
-                subprocess.check_call(['vlib', 'work'])
-
-        subprocess.check_call(['python', 'test_all.py'])
-
-    shutil.copy(vpi_name[name], dest)
+    for s in sims:
+        name = s.__name__
+        if s.vpi_exists and not force:
+            click.echo('VPI for {0} already exists.'.format(name))
+            continue
+        VPI.make(name)
 
 
 @vpi.command('clean')

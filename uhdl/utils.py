@@ -9,30 +9,51 @@ import collections
 import contextlib
 import distutils.spawn
 import os
+import subprocess
 import shutil
 import sys
 from functools import wraps
+from tempfile import mkdtemp
 
 
-class _VPI():
+def get_data_dir():
+    plat = sys.platform
+    if plat.startswith('linux'):
+        data_dir = os.getenv('XDG_DATA_HOME', '~/.local/share')
+    elif plat == 'darwin':
+        data_dir = '~/Library/Application Support/'
+    return os.path.join(os.path.expanduser(data_dir), 'uhdl')
+
+
+class _VPI(object):
+    dir = os.path.join(get_data_dir(), 'vpi')
+    cosim_src = os.path.join(sys.prefix, 'share/myhdl/cosimulation')
+
     def __init__(self):
-        plat = sys.platform
-        if plat.startswith('linux'):
-            data_dir = os.getenv('XDG_DATA_HOME', '~/.local/share')
-        elif plat == 'darwin':
-            data_dir = '~/Library/Application Support/'
+        if not os.path.exists(self.dir):
+            os.makedirs(self.dir)
 
-        self._dir = os.path.join(os.path.expanduser(data_dir), 'uhdl', 'vpi')
-        if not os.path.exists(self._dir):
-            os.makedirs(self._dir)
+    def make(self, name, force=False):
+        dest = os.path.join(self.dir, name+'.vpi')
+        print(dest)
+        if not force and os.path.exists(dest):
+            return
 
-    @property
-    def dir(self):
-        return self._dir
+        tmpdir = mkdtemp()
+        srcdir = os.path.join(tmpdir, 'cosim')
+        shutil.copytree(os.path.join(self.cosim_src), srcdir)
+
+        vpi_name = {
+            'icarus': 'myhdl.vpi',
+            'modelsim': 'myhdl_vpi.so'
+        }
+        with cd(os.path.join(srcdir, name)):
+            subprocess.check_call(['make', 'test'])
+            shutil.copy(vpi_name[name], dest)
 
     def clean(self):
-        if os.path.exists(self._dir):
-            shutil.rmtree(self._dir)
+        if os.path.exists(self.dir):
+            shutil.rmtree(self.dir)
 
 VPI = _VPI()
 

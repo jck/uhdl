@@ -1,11 +1,11 @@
 import subprocess
 
 from myhdl import always_comb, instance, StopSimulation, Simulation, delay
-from uhdl import HW, Sigs, randbits
+from uhdl import HW, Sigs, randbits, utils
 
 
 def setup_module():
-    subprocess.check_call(['uhdl', 'vpi', 'init'])
+    utils.VPI.make('icarus')
 
 
 def connect(ip, op):
