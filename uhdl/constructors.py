@@ -5,102 +5,39 @@ uhdl.constructors
 This module provides the core uhdl constructors.
 """
 
-import random
-
-from myhdl import intbv, EnumType, EnumItemType, Signal
+from myhdl import intbv, Signal
 
 
-#modbv is a subclass of intbv, so it can be skipped.
-_myhdltypes = (intbv, EnumType, EnumItemType)
+def all_none(*lst):
+    return all(x is None for x in lst)
 
 
-def bits(n=None, val=None, min=None, max=None):
-    """Constructs a :class:`myhdl.intbv` object.
-
-    Simplify the frequent cases of creating bit oriented objects(intbv/bool)
-
-    Args:
-        n (int): Bit width
-        val (int): Inital value
-        min (int): Minimum value; Used only if max is specified.
-        max (int): Maximum value; Overrides bits argument.
-
-    Returns:
-        intbv or bool
-
-    Examples:
-        bits() == intbv()
-
-        bits(0), bits(1) == False, True
-
-        bits(n) == intbv()[n:]
-
-        bits(n, v) == intbv(v)[n:]
-
-        bits(min=i, max=j) == intbv(val=i, min=i, max=j)
-
-        bits(val=x, min=i, max=j) == intbv(val=x, min=i, max=j)
-    """
-
-    if all(v is None for v in (n, min, max)):
-        return intbv(val or 0)
-
-    if any(v is not None for v in (min, max)):
-        if n:
-            raise ValueError("bitwidth with min/max")
-        if max is None:
-            raise ValueError("min without max")
-        if min is None:
-            min = 0
-        if val is None:
-            val = min
-        obj = intbv(val=val, min=min, max=max)
-    elif type(n) == int:
-        if n in (0, 1):
-            obj = bool(n)
-        else:
-            if not val:
-                val = 0
-            obj = intbv(val)[n:]
-    else:
-        raise ValueError
-
-    return obj
+def is_num(x):
+    return isinstance(x, int) and not isinstance(x, bool)
 
 
-def randbits(n=0, min=None, max=None):
-    """Create random bits easily, for simulations.
+def Sig(val=None, w=None, min=None, max=None):
+    if all_none(w, min, max):
+        if is_num(val):
+            val = intbv(val)
+        return Signal(val)
 
-    Passes arguments to :func:`.bits` and changes the value to random.
-    """
-    bv = bits(n=n, min=min, max=max)
-    if isinstance(bv, bool):
-        return random.choice([True, False])
+    min_max = not all_none(min, max)
+    explicit_width = w is not None
+    if explicit_width and min_max:
+        raise ValueError("Only one of width or min/max must be provided")
 
-    if len(bv) == 0:
-        raise ValueError("Unspecified bit width")
-    bv[:] = random.getrandbits(len(bv))
-    return bv
+    if not is_num(val) and val is not None:
+        raise TypeError('Specifying width is supported only for int values')
 
+    if explicit_width:
+        val = intbv(val or 0)[w:]
+    elif min_max:
+        if None in (min, max):
+            raise ValueError("Both min and max must be provided")
+        val = intbv(val=val or min, min=min, max=max)
 
-def Sig(*args, **kwargs):
-    """Create Signals with the same API as :func:`.bits`.
-
-    If the first argument is a bool or a myhdl type, a :class:`myhdl.Signal`
-    is constructed of it.
-
-    Else, arguments pass through to :func:`bits` and a :class:`myhdl.Signal`
-    is constructed from the returned object.
-    """
-    if any((args, kwargs)):
-        if args and isinstance(args[0], _myhdltypes + (bool,)):
-            obj = args[0]
-        else:
-            obj = bits(*args, **kwargs)
-    else:
-        obj = None
-
-    return Signal(obj)
+    return Signal(val)
 
 
 def create(n, constructor, *args, **kwargs):
