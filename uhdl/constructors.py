@@ -45,12 +45,12 @@ def bits(n=None, val=None, min=None, max=None):
     if all(v is None for v in (n, min, max)):
         return intbv(val or 0)
 
-    if min or max:
+    if any(v is not None for v in (min, max)):
         if n:
             raise ValueError("bitwidth with min/max")
-        if not max:
+        if max is None:
             raise ValueError("min without max")
-        if not min:
+        if min is None:
             min = 0
         if val is None:
             val = min
