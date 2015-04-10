@@ -1,33 +1,42 @@
+from hypothesis import assume, given
+from hypothesis.specifiers import integers_in_range
 from myhdl import Signal, intbv
+
 from uhdl import Sig
 
+width = integers_in_range(2, 100)
 
 def test_noargs():
     assert Sig() == Signal()
 
 
-def test_bool():
-    assert Sig(True) == Signal(True)
-    assert Sig(False) == Signal(False)
+@given(bool)
+def test_bool(x):
+    assert Sig(x) == Signal(x)
 
 
-def test_only_width():
-    expected = Signal(intbv()[10:])
-    assert Sig(10) == expected
-    assert Sig(n=10) == expected
+@given(width)
+def test_only_width(x):
+    expected = Signal(intbv())
+    assert Sig(x) == expected
+    assert Sig(n=x) == expected
 
 
-def test_width_and_initial_value():
-    expected = Signal(intbv(20)[10:])
-    assert Sig(10, 20) == expected
-    assert Sig(10, val=20) == expected
-    assert Sig(n=10, val=20) == expected
+@given(width, int)
+def test_width_and_initial_value(width, initial):
+    expected = Signal(intbv(initial)[width:])
+    assert Sig(width, initial) == expected
+    assert Sig(width, val=initial) == expected
+    assert Sig(n=width, val=initial) == expected
 
 
-def test_only_max():
-    assert Sig(max=50) == Signal(intbv(min=0, max=50))
+@given(int)
+def test_only_max(x):
+    assume(x > 0)
+    assert Sig(max=x) == Signal(intbv(min=0, max=x))
 
 
-def test_min_max():
-    assert Sig(min=30, max=60) == Signal(intbv(val=30, min=30, max=60))
-    assert Sig(val=40, min=30, max=60) == Signal(intbv(val=40, min=30, max=60))
+@given(int, int)
+def test_min_max(min, max):
+    assume(min < max)
+    assert Sig(min=min, max=max) == Signal(intbv(val=min, min=min, max=max))
