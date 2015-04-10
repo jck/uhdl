@@ -4,9 +4,12 @@ uhdl.constructors
 
 This module provides the core uhdl constructors.
 """
+import random
 
 from myhdl import intbv, Signal
 
+def randbits(n):
+    return intbv(val=random.getrandbits(n))[n:]
 
 def all_none(*lst):
     return all(x is None for x in lst)

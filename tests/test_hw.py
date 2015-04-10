@@ -17,7 +17,7 @@ def connect(ip, op):
     return logic
 
 
-a, b = Sigs(2, 32)
+a, b = Sigs(2, w=32)
 dut = HW(connect, a, b)
 
 
