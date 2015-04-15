@@ -12,6 +12,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import importlib
+import inspect
 import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -41,7 +43,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.linkcode',
               'sphinx.ext.intersphinx', 'sphinx.ext.napoleon']
 
 intersphinx_mapping = {
-    'myhdl': ('http://myhdl.org/doc/current', None),
+    'myhdl': ('http://docs.myhdl.org/en/latest', None),
 }
 
 
@@ -114,6 +116,12 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'default'
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -265,3 +273,29 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+gh_repo = 'jck/uhdl'
+
+def linkcode_resolve(domain, info):
+    """ Link source code to github. """
+    if domain != 'py' or not info['module']:
+        return None
+
+    rel = release
+    if rel.split('.')[-1].startswith('dev'):
+        rel = 'master'
+
+    mod = importlib.import_module(info['module'])
+    item = mod
+    for piece in info['fullname'].split('.'):
+        item = getattr(item, piece)
+
+    # filename = os.path.splitext(mod.__file___)[0]
+    try:
+        filename = os.path.relpath(inspect.getsourcefile(item), project_root)
+        lineno = '#L%d' % inspect.getsourcelines(item)[1]
+    except:
+        return None
+
+    return ("https://github.com/%s/blob/%s/%s.py%s" %
+            (gh_repo, rel, filename, lineno))
