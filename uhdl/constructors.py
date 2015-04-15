@@ -8,6 +8,8 @@ import random
 
 from myhdl import intbv, Signal
 
+from ._compat import integer_types
+
 def randbits(n):
     return intbv(val=random.getrandbits(n))[n:]
 
@@ -15,13 +17,13 @@ def all_none(*lst):
     return all(x is None for x in lst)
 
 
-def is_num(x):
-    return isinstance(x, int) and not isinstance(x, bool)
+def is_int(x):
+    return not isinstance(x, bool) and isinstance(x, integer_types)
 
 
 def Sig(val=None, w=None, min=None, max=None):
     if all_none(w, min, max):
-        if is_num(val):
+        if is_int(val):
             val = intbv(val)
         return Signal(val)
 
@@ -30,7 +32,7 @@ def Sig(val=None, w=None, min=None, max=None):
     if explicit_width and min_max:
         raise ValueError("Only one of width or min/max must be provided")
 
-    if not is_num(val) and val is not None:
+    if not is_int(val) and val is not None:
         raise TypeError('Specifying width is supported only for int values')
 
     if explicit_width:
