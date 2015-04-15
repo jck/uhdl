@@ -297,5 +297,5 @@ def linkcode_resolve(domain, info):
     except:
         return None
 
-    return ("https://github.com/%s/blob/%s/%s.py%s" %
+    return ("https://github.com/%s/blob/%s/%s%s" %
             (gh_repo, rel, filename, lineno))
