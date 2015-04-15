@@ -3,7 +3,6 @@
 
 import ast
 import re
-import uuid
 
 from setuptools import setup
 
@@ -17,6 +16,7 @@ with open('uhdl/__init__.py', 'rb') as f:
 
 readme = open('README.rst').read()
 
+tests_require = ['pytest', 'hypothesis']
 
 setup(
     name='uhdl',
@@ -42,6 +42,8 @@ setup(
         'click',
         'wrapt',
     ],
+    tests_require=tests_require,
+    extras_require = {'test': tests_require},
     license="BSD",
     zip_safe=False,
     keywords='uhdl',

@@ -11,10 +11,6 @@ addons:
   apt_packages:
     - iverilog
 
-install:
-  - pip install -r requirements.txt
-  - pip install .
-
 script: py.test
 
 notifications:

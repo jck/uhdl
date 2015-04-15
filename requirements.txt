@@ -1,5 +1,2 @@
-git+https://github.com/jandecaluwe/myhdl.git
-click
-wrapt
-pytest
-hypothesis
+https://github.com/jandecaluwe/myhdl/tarball/master
+-e .[test]
