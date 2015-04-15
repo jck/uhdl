@@ -3,3 +3,4 @@ click
 wrapt
 pytest
 hypothesis
+sphinx==1.3.1
