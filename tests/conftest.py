@@ -1,7 +1,8 @@
 import pytest
 
 
-@pytest.fixture
+@pytest.yield_fixture
 def in_tmpdir(tmpdir):
     """Change to pytest-provided temporary directory"""
-    tmpdir.chdir()
+    with tmpdir.as_cwd():
+        yield tmpdir
