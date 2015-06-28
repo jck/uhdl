@@ -2,6 +2,7 @@ import copy
 
 from .field import Field
 from .factory import to_sigcon, to_sigstruct
+from .._compat import with_metaclass
 
 all_factories = (to_sigcon, to_sigstruct)
 
@@ -44,9 +45,7 @@ class ModelBase(type):
         return new_class
 
 
-class Model(object):
-    __metaclass__ = ModelBase
-
+class Model(with_metaclass(ModelBase)):
     def __init__(self, *args, **kwargs):
         self._fields = copy.deepcopy(self._meta.fields)
         fields_iter = iter(self._fields)
