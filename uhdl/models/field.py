@@ -24,7 +24,8 @@ class Field(object):
 class bits(Field):
 
     def __init__(self, *args, **kwargs):
-        self._obj = uhdl.bits(*args, **kwargs)
+        # self._obj = uhdl.bits(*args, **kwargs)
+        self._obj = _intbv()[args[0]:]
         if isinstance(self._obj, bool):
             self._obj = _intbv(self.obj)[1:]
         super(bits, self).__init__()
