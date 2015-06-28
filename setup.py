@@ -14,7 +14,7 @@ with open('uhdl/__init__.py', 'rb') as f:
         f.read().decode('utf-8')).group(1)))
 
 
-readme = open('README.rst').read()
+readme = open('README.md').read()
 
 tests_require = ['pytest', 'hypothesis']
 
