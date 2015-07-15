@@ -11,7 +11,9 @@ from .backends import CoSimulator
 from .utils import cd, VPI
 
 
-@click.group()
+@click.group(context_settings={
+    'help_option_names': ['-h', '--help']
+})
 def cli():
     pass
 
