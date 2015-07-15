@@ -7,9 +7,9 @@ Unreleased
 - ``run`` has been split into a ``sim`` decorator and a ``run_sim`` function
 
 
-0.0.9 (2013-10-27)
-------------------
-- First release on PyPI.
+(2013-10-27)
+------------
+- First public version. Not available on PyPI anymore because of various issues.
 - Features:
     * Constructors: bits, randbits, create, Sig, Sigs, Clock, Reset
     * Simulation: HW, run

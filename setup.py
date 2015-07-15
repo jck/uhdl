@@ -7,11 +7,11 @@ import re
 from setuptools import setup
 
 
-_version_re = re.compile(r'__version__\s+=\s+(.*)')
+# _version_re = re.compile(r'__version__\s+=\s+(.*)')
 
-with open('uhdl/__init__.py', 'rb') as f:
-    version = str(ast.literal_eval(_version_re.search(
-        f.read().decode('utf-8')).group(1)))
+# with open('uhdl/__init__.py', 'rb') as f:
+#     version = str(ast.literal_eval(_version_re.search(
+#         f.read().decode('utf-8')).group(1)))
 
 
 readme = open('README.md').read()
@@ -20,7 +20,8 @@ tests_require = ['pytest', 'hypothesis']
 
 setup(
     name='uhdl',
-    version=version,
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     description='Python Hardware Description for Humans.',
     long_description=readme,
     author='Keerthan Jaic',
