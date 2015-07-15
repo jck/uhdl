@@ -38,7 +38,7 @@ setup(
     },
     include_package_data=True,
     install_requires=[
-        'myhdl>=0.9.dev0',
+        'myhdl>=0.9.0',
         'click',
         'wrapt',
     ],
