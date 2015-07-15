@@ -7,7 +7,7 @@ from tempfile import mkdtemp
 
 import click
 
-from .backends import CoSimulator
+from .cosim import CoSimulator
 from .utils import cd, VPI
 
 

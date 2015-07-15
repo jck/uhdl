@@ -3,7 +3,7 @@ import shutil
 
 from myhdl import toVerilog, toVHDL, traceSignals
 
-from uhdl.backends import CoSimulator
+from uhdl.cosim import CoSimulator
 from uhdl.utils import cd
 from uhdl.structures import CaselessDict
 
